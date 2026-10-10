@@ -69,3 +69,19 @@ Responsável pelo registro de alto volume e esquema flexível (Ex: Feed e Histó
 - **Back-end:** Node.js, Express, JavaScript.
 - **Bancos de Dados:** PostgreSQL ou MySQL (SQL) + MongoDB (NoSQL).
 - **Outros:** Git e GitHub (Versionamento).
+
+## 8. Fontes de Dados e Integração (Oráculo)
+
+Para gerar previsões estatisticamente reais (porém exibidas com o tom cômico e pessimista do C-3PO), o oráculo utilizará bases de dados públicas do Brasil. A arquitetura de dados adotará o processo **ETL (Extract, Transform, Load)**: as tabelas serão extraídas, agregadas previamente e armazenadas no nosso Banco SQL, garantindo respostas instantâneas no front-end.
+
+### 8.1. Principais Fontes e APIs
+- **IBGE (API SIDRA):** Consulta à Tábua de Mortalidade (probabilidade de sobrevivência) e PNAD Contínua (chances de emprego e dados de renda por demografia).
+- **Base dos Dados (basedosdados.org):** Repositório centralizado (BigQuery) contendo dados do INEP, DATASUS, RAIS e Receita Federal. Ideal para cruzar educação com média salarial.
+- **DATASUS (Ministério da Saúde):** Dados do TABNET, SINASC e SIM para prever riscos de saúde diários de forma lúdica.
+- **INEP / MEC:** Microdados do ENEM e Censo da Educação Superior para calcular a probabilidade de evasão universitária.
+- **APIs Lúdicas (Fallback):** APIs como `Agify.io` (idade baseada no nome) e `YesNo API` (respostas aleatórias em GIF) para processar perguntas subjetivas ou imprevisíveis.
+
+### 8.2. Eixos de Resposta do Sistema
+1. **Saúde e Longevidade:** Cruzamentos demográficos estatísticos.
+2. **Carreira e Sucesso:** Probabilidades do mercado de trabalho e universidade.
+3. **Caos Aleatório:** Respostas puramente humorísticas quando não houver correspondência de dados estruturados.
