@@ -10,10 +10,15 @@ O personagem central que fornece as respostas é inspirado no **C-3PO** (da fran
 
 ## 🛠️ Tecnologias e Arquitetura
 
-*(Em definição)*
+Este projeto utiliza uma arquitetura moderna dividida entre Front-end e Back-end, aplicando o conceito de **persistência poliglota** (usando múltiplos paradigmas de banco de dados para diferentes necessidades):
+
+- **Front-end (Web II):** React.js 
+- **Back-end:** Node.js com Express
+- **Banco de Dados SQL (BD II):** Gerenciará os dados relacionais e estruturados, como as contas de Usuários e perfis.
+- **Banco de Dados NoSQL (BD II):** Gerenciará as Previsões, guardando os históricos de perguntas, respostas e as probabilidades calculadas de forma flexível (via documentos JSON).
 
 ## 🚀 Próximos Passos
 
-- [ ] Definir a stack tecnológica (Linguagens e Frameworks).
+- [x] Definir a stack tecnológica (Linguagens e Frameworks).
 - [ ] Desenhar o esquema do Banco de Dados.
 - [ ] Criar os protótipos da Interface (UI).
