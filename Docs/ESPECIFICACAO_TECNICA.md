@@ -46,6 +46,12 @@
         - [Tabela de Endpoints e Retornos JSON](#8113-tabela-de-endpoints-e-formatos-de-retorno)
         - [Matriz de Decisão: Banco Governamental vs. API Lúdica](#8114-matriz-de-decisão-banco-governamental-vs-api-lúdica)
         - [Arquitetura de Resiliência e Fallback](#8115-arquitetura-de-resiliência-e-fallback)
+9. [Seleção Oficial de Fontes de Dados (Escopo de Implementação)](#9-seleção-oficial-de-fontes-de-dados-escopo-de-implementação)
+    - [Justificativa do Recorte Estratégico](#91-justificativa-do-recorte-estratégico)
+    - [Fontes Governamentais Selecionadas (Camada SQL)](#92-fontes-governamentais-selecionadas-camada-sql)
+    - [APIs Lúdicas e de Humor Selecionadas (Camada Web II)](#93-apis-lúdicas-e-de-humor-selecionadas-camada-web-ii)
+    - [Fluxo Integrado da Experiência e Persona C-3PO](#94-fluxo-integrado-da-experiência-e-persona-c-3po)
+    - [Estratégia de Performance, Cache e Mitigação de Rate-Limit](#95-estratégia-de-performance-cache-e-mitigação-de-rate-limit)
 
 ---
 
@@ -647,3 +653,108 @@ Para assegurar nota máxima em arquitetura e confiabilidade nas disciplinas de W
 1. **Timeout Estrito (Fail-Fast):** Todas as chamadas para APIs lúdicas externas possuem um timeout máximo configurado de **1.500 ms** (1,5 segundos).
 2. **Fallback Local em Caso de Falha de Rede:** Caso o serviço externo (ex: `yesno.wtf` ou `swapi.dev`) esteja fora do ar ou sem internet, o backend intercepta o erro em um bloco `try/catch` e utiliza um gerador pseudoaleatório local calibrado (`Math.random()`), acompanhado de um banco local de frases e GIFs armazenados no próprio servidor.
 3. **Resultado:** A interface do usuário **nunca quebra**, mantendo uma experiência fluida, veloz e divertida em 100% dos cenários!
+
+---
+
+## 9. Seleção Oficial de Fontes de Dados (Escopo de Implementação)
+
+Enquanto a Seção 8 serviu como um dossiê amplo de exploração e viabilidade técnica das diversas bases públicas disponíveis no Brasil e no mundo, esta seção estabelece o **escopo oficial e definitivo** das fontes de dados que serão efetivamente integradas e implementadas no **Vidente.db**.
+
+A seleção foi desenhada para maximizar a sinergia entre **Web II** (interatividade, interfaces reativas e humor visual) e **Banco de Dados II** (persistência poliglota com consultas relacionais e NoSQL de alta performance).
+
+---
+
+### 9.1. Justificativa do Recorte Estratégico
+
+Para evitar a sobrecarga de lidar com formatos legados de alta complexidade de infraestrutura (como os arquivos compactados `.dbc` do DATASUS dos anos 1990) ou a volatilidade de consultas analíticas lentas em tempo real (como o BigQuery em tempo de execução), optou-se por um **ecossistema híbrido, elegante e balanceado**:
+
+1. **Relevância para a Banca Universitária:** O uso de dados de evasão universitária do INEP cria conexão imediata e humorística com professores e alunos durante a demonstração prática.
+2. **Demonstração Prática de Persistência Poliglota:**
+   - **SQL (PostgreSQL/MySQL):** Guarda os cadastros de `Usuarios` e as tabelas agregadas indexadas das bases governamentais (`estatisticas_cursos` e `estatisticas_carreira`), garantindo tempos de resposta sub-milissegundos (< 5ms).
+   - **NoSQL (MongoDB):** Armazena os documentos da coleção `Previsoes` contendo todo o histórico enriquecido (pergunta, probabilidades, diagnósticos biométricos, conselho de protocolo e humor do droide).
+3. **Experiência Visual e Interativa no React:** As APIs lúdicas acrescentam GIFs animados em alta definição, curiosidades matemáticas e conselhos cômicos sem risco de tela em branco.
+
+---
+
+### 9.2. Fontes Governamentais Selecionadas (Camada SQL)
+
+| Fonte / Órgão | Modo de Integração | Tabela SQL / Endpoint | Finalidade no Vidente.db |
+| :--- | :--- | :--- | :--- |
+| **INEP / MEC (Censo Superior)** | Carga ETL prévia (Base dos Dados) | `estatisticas_cursos` | Cálculo da probabilidade de evasão universitária, chances de conclusão no prazo regular e drama acadêmico por curso e estado. |
+| **RAIS / Ministério do Trabalho** | Carga ETL prévia (Base dos Dados) | `estatisticas_carreira` | Previsão salarial realista, média de remuneração por ocupação em TI e probabilidade de prosperidade financeira. |
+| **IBGE (Serviço de Dados)** | Consumo Assíncrono REST (Gratuito/Aberto) | `/localidades/estados`<br>`/localidades/estados/{UF}/municipios`<br>`/censos/nomes/{nome}` | Alimentação dos selects de Localidade no formulário React e cálculo da frequência demográfica/raridade cósmica do nome do usuário. |
+
+---
+
+### 9.3. APIs Lúdicas e de Humor Selecionadas (Camada Web II)
+
+As APIs lúdicas operam como enriquecedoras de conteúdo e motor de entretenimento, garantindo que mesmo perguntas totalmente abertas ou abstratas recebam retornos memoráveis:
+
+1. **Tríade Preditiva do Nome (Agify.io, Nationalize.io e Genderize.io):**
+   - **Papel:** Atua como o "Escaneamento Biométrico de Sensores" do droide.
+   - **Comportamento:** Ao capturar o primeiro nome do usuário no formulário, deduz a idade mais provável (Agify), o país de origem provável (Nationalize) e o gênero associado (Genderize), exibindo um diagnóstico cômico de entrada antes mesmo de entregar a profecia.
+2. **SWAPI (The Star Wars API - `swapi.dev`):**
+   - **Papel:** Fornece a identidade canônica e métricas espaciais do C-3PO.
+   - **Comportamento:** Permite ao oráculo fazer analogias com sua própria biografia galáctica (droide de protocolo de 167 cm construído em Tatooine) e comparar probabilidades de risco cotidiano com cenários clássicos (como navegar pelo campo de asteroides de Hoth ou enfrentar chances de 1 em 3.720).
+3. **YesNo.wtf API (`yesno.wtf/api`):**
+   - **Papel:** Resposta binária com impacto audiovisual instantâneo.
+   - **Comportamento:** Para dúvidas diretas de "Sim ou Não", retorna a decisão acompanhada de um GIF animado em alta definição perfeitamente sincronizado com o desespero ou alívio do C-3PO.
+4. **NumbersAPI (`numbersapi.com`):**
+   - **Papel:** "Curiosidade Matemática de Droide".
+   - **Comportamento:** A cada probabilidade percentual calculada (ex: `73%`), consulta um fato histórico ou matemático associado àquele número exato, adicionando um rodapé nerd à previsão.
+5. **Advice Slip API (`api.adviceslip.com`):**
+   - **Papel:** "Conselho Não Solicitado de Protocolo".
+   - **Comportamento:** Entrega uma pílula cômica e aleatória de conselho de vida universal para tentar amenizar a frieza dos cálculos estatísticos.
+6. **Magic 8-Ball API (`dumbapis.com/magic-8-ball`):**
+   - **Papel:** Motor de fallback e profecias alternativas místicas.
+   - **Comportamento:** Respostas diretas e misteriosas para consultas subjetivas e para manter a operação caso outros serviços enfrentem indisponibilidade.
+
+---
+
+### 9.4. Fluxo Integrado da Experiência e Persona C-3PO
+
+O diagrama abaixo ilustra o ciclo de vida completo de uma consulta ao Oráculo sob o novo escopo oficial:
+
+```mermaid
+graph TD
+    A[Usuário no React: Digita Nome, UF, Pergunta e Curso/Carreira] --> B[Escaneamento Biométrico de Entrada]
+    
+    B -->|Agify + Nationalize + Genderize| C[C-3PO traça Perfil do Visitante]
+    
+    C --> D{Classificador Temático do Back-end}
+    
+    D -->|Pergunta sobre Faculdade / Formatura| E[(Banco SQL: estatisticas_cursos INEP)]
+    D -->|Pergunta sobre Emprego / Salário| F[(Banco SQL: estatisticas_carreira RAIS)]
+    D -->|Pergunta Aberta / Sim ou Não| G[YesNo.wtf + Magic 8-Ball]
+    
+    E --> H[Consolidador de Persona C-3PO]
+    F --> H
+    G --> H
+    
+    H -->|Enriquecimento em Paralelo| I[NumbersAPI: Trivia do Número %]
+    H -->|Enriquecimento em Paralelo| J[Advice Slip: Conselho de Protocolo]
+    H -->|Enriquecimento em Paralelo| K[SWAPI: Metáfora Galáctica Canônica]
+    
+    I --> L[Objeto Final da Previsão JSON]
+    J --> L
+    K --> L
+    
+    L -->|1. Grava Documento Completo no Feed/Histórico| M[(Banco NoSQL: MongoDB Coleção Previsoes)]
+    L -->|2. Retorna Resposta Reativa| N[Interface React: Exibe Diagnóstico, GIF, % e Persona]
+```
+
+---
+
+### 9.5. Estratégia de Performance, Cache e Mitigação de Rate-Limit
+
+Para garantir que a integração simultânea dessas APIs funcione com extrema rapidez, segurança e confiabilidade (sem riscos de travamento durante a apresentação do projeto), o back-end em Node.js adotará os seguintes padrões:
+
+1. **Execução Assíncrona Não-Bloqueante (`Promise.allSettled`):**
+   - Todas as consultas lúdicas (NumbersAPI, Advice Slip, SWAPI, YesNo) são disparadas de forma concorrente. Caso alguma API externa sofra instabilidade pontual, as demais são aproveitadas sem abortar a requisição do usuário.
+2. **Mitigação de Rate-Limit (Cache da Tríade do Nome):**
+   - Como os serviços *Agify/Nationalize/Genderize* limitam a cota a 100 requisições diárias gratuitas por IP, os resultados obtidos por nome são cacheados em memória/banco. Consultas subsequentes para o mesmo nome respondem em tempo instantâneo (0 ms) e sem consumir requisições da cota.
+3. **Pré-Carregamento (Seed Cache) da SWAPI:**
+   - As informações canônicas do C-3PO e citações de Star Wars são carregadas durante o boot do servidor ou salvas em arquivo estático de configuração, evitando latência de rede desnecessária.
+4. **Degradação Graciosa Garantida:**
+   - O oráculo mantém limites de timeout estritos de 1.500 ms. Se a conexão externa falhar por qualquer motivo, o motor recorre ao gerador pseudoaleatório local calibrado com o banco de frases do droide, assegurando 100% de disponibilidade.
+
